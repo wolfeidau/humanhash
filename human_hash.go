@@ -98,15 +98,16 @@ func Compress(bytes []byte, target int) []byte {
 
 	segmentSize := length / target
 
-	var segments [][]byte
+	segments := make([][]byte, target)
 
-	for i := 0; i < target; i++ {
-		s := bytes[i*segmentSize : (i+1)*segmentSize]
-		segments = append(segments, s)
+	for i := range segments {
+		segments[i] = bytes[i*segmentSize : (i+1)*segmentSize]
 	}
 
-	remainder := len(bytes) % target
+	remainder := length % target
 
+	// if there is some remaining bytes after dividing up the input
+	// append them to the last segment
 	if remainder > 0 {
 		segments[len(segments)-1] = append(segments[len(segments)-1], bytes[segmentSize*target:length]...)
 	}
