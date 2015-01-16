@@ -4,7 +4,7 @@ This golang library converts a arbitry array of bytes into a string composed of 
 
 It is very handy if you have a digest and you want to reduce it into something memorable.
 
-# example
+# Example
 
 ```go
 
@@ -17,12 +17,6 @@ result := humanhash.Humanize(input, 4)
 log.Printf("result = %s", result)
 
 ```
-
-
-
-# Disclaimer
-
-This is currently very early release, everything can and will change.
 
 # Sponsor
 
