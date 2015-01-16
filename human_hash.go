@@ -2,6 +2,16 @@
 // an array of words which are concatenated together in a more memorable string.
 // The aim is to represent a hash in a form which is easier to recognise than a
 // hex or base64 encoded string.
+//
+// Example usage:
+//   input :=  []byte{96, 173, 141, 13, 135, 27, 96, 149, 128, 130, 151}
+//
+//   // take the input and map it to 4 words
+//   result := humanhash.Humanize(input, 4)
+//
+//   // prints "result = sodium-magnesium-nineteen-hydrogen"
+//   log.Printf("result = %s", result)
+//
 package humanhash
 
 import (
@@ -49,8 +59,7 @@ var DefaultWordList = []string{
 	"zulu"}
 
 // SetWordList allows you to override the default word list used by the Humanize method.
-// This list of words MUST be 255 line to enable encoding of bytes and maintain the
-// variance in values.
+// This list of words MUST contain 255 entries.
 func SetWordList(words []string) error {
 
 	if len(words) != 255 {
@@ -58,6 +67,8 @@ func SetWordList(words []string) error {
 	}
 
 	DefaultWordList = words
+
+	return nil
 }
 
 // Humanize takes a digest or some array of bytes, compresses it and selects a number of
