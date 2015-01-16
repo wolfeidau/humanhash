@@ -11,7 +11,7 @@ It is very handy if you have a digest and you want to reduce it into something m
 input :=  []byte{96, 173, 141, 13, 135, 27, 96, 149, 128, 130, 151}
 
 // take the input and map it to 4 words
-result := humanhash.Humanize(input, 4)
+result, _ := humanhash.Humanize(input, 4)
 
 // prints "result = sodium-magnesium-nineteen-hydrogen"
 log.Printf("result = %s", result)
