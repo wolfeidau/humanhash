@@ -18,7 +18,10 @@ func TestCompress(t *testing.T) {
 	}
 
 	for _, fixture := range fixtures {
-		res := Compress(fixture.input, 4)
+		res, err := Compress(fixture.input, 4)
+		if err != nil {
+			t.Error(err)
+		}
 		//		log.Printf("res %v", res)
 		if hex.Dump(res) != hex.Dump(fixture.result) {
 			t.Errorf("humanize didn't match expected=%v actual=%v", fixture.result, res)
@@ -40,7 +43,11 @@ func TestHumanize(t *testing.T) {
 	}
 
 	for _, fixture := range fixtures {
-		res := Humanize(fixture.input, 4)
+		res, err := Humanize(fixture.input, 4)
+		if err != nil {
+			t.Error(err)
+		}
+
 		//		log.Printf("res %v", res)
 		if res != fixture.result {
 			t.Errorf("humanize didn't match expected=%s actual=%s", fixture.result, res)

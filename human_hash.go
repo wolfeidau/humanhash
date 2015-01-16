@@ -19,6 +19,11 @@ import (
 	"strings"
 )
 
+var (
+	ErrTargetLessThanInput = errors.New("Fewer input bytes than requested target")
+	ErrIncorrectSizeList   = errors.New("Word list must contain 255 words")
+)
+
 // The default word list.
 var DefaultWordList = []string{
 	"ack", "alabama", "alanine", "alaska", "alpha", "angel", "apart", "april",
@@ -63,7 +68,7 @@ var DefaultWordList = []string{
 func SetWordList(words []string) error {
 
 	if len(words) != 255 {
-		return errors.New("Word list must contain 255 words.")
+		return ErrIncorrectSizeList
 	}
 
 	DefaultWordList = words
@@ -74,26 +79,31 @@ func SetWordList(words []string) error {
 // Humanize takes a digest or some array of bytes, compresses it and selects a number of
 // words to represent it. The selection of words will occur the same for the a matching
 // hash but it isn't reversable to the hash.
-func Humanize(digest []byte, words int) string {
+func Humanize(digest []byte, words int) (string, error) {
 
 	var w []string
 
-	c := Compress(digest, words)
+	c, err := Compress(digest, words)
+
+	if err != nil {
+		return "", err
+	}
 
 	for _, b := range c {
 		w = append(w, DefaultWordList[b])
 	}
 
-	return strings.Join(w, "-")
+	return strings.Join(w, "-"), nil
 }
 
 // Compress an array of bytes to the target size using a simple xor.
-func Compress(bytes []byte, target int) []byte {
+func Compress(digest []byte, target int) ([]byte, error) {
+	results := make([]byte, target)
 
-	length := len(bytes)
+	length := len(digest)
 
 	if target > length {
-		errors.New("Fewer input bytes than requested output")
+		return results, ErrTargetLessThanInput
 	}
 
 	segmentSize := length / target
@@ -101,7 +111,7 @@ func Compress(bytes []byte, target int) []byte {
 	segments := make([][]byte, target)
 
 	for i := range segments {
-		segments[i] = bytes[i*segmentSize : (i+1)*segmentSize]
+		segments[i] = digest[i*segmentSize : (i+1)*segmentSize]
 	}
 
 	remainder := length % target
@@ -109,10 +119,8 @@ func Compress(bytes []byte, target int) []byte {
 	// if there is some remaining bytes after dividing up the input
 	// append them to the last segment
 	if remainder > 0 {
-		segments[len(segments)-1] = append(segments[len(segments)-1], bytes[segmentSize*target:length]...)
+		segments[len(segments)-1] = append(segments[len(segments)-1], digest[segmentSize*target:length]...)
 	}
-
-	results := make([]byte, target)
 
 	// xor each segment into it's respective bucket
 	for i := range segments {
@@ -121,5 +129,5 @@ func Compress(bytes []byte, target int) []byte {
 		}
 	}
 
-	return results
+	return results, nil
 }
