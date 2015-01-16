@@ -1,3 +1,7 @@
+// Package humanhash provides some methods to reduce a hash or uuid bytes into
+// an array of words which are concatenated together in a more memorable string.
+// The aim is to represent a hash in a form which is easier to recognise than a
+// hex or base64 encoded string.
 package humanhash
 
 import (
@@ -5,6 +9,7 @@ import (
 	"strings"
 )
 
+// The default word list.
 var DefaultWordList = []string{
 	"ack", "alabama", "alanine", "alaska", "alpha", "angel", "apart", "april",
 	"arizona", "arkansas", "artist", "asparagus", "aspen", "august", "autumn",
@@ -43,7 +48,21 @@ var DefaultWordList = []string{
 	"wisconsin", "wolfram", "wyoming", "xray", "yankee", "yellow", "zebra",
 	"zulu"}
 
-// hexdigest, words=4, separator='-'
+// SetWordList allows you to override the default word list used by the Humanize method.
+// This list of words MUST be 255 line to enable encoding of bytes and maintain the
+// variance in values.
+func SetWordList(words []string) error {
+
+	if len(words) != 255 {
+		return errors.New("Word list must contain 255 words.")
+	}
+
+	DefaultWordList = words
+}
+
+// Humanize takes a digest or some array of bytes, compresses it and selects a number of
+// words to represent it. The selection of words will occur the same for the a matching
+// hash but it isn't reversable to the hash.
 func Humanize(digest []byte, words int) string {
 
 	var w []string
@@ -57,6 +76,7 @@ func Humanize(digest []byte, words int) string {
 	return strings.Join(w, "-")
 }
 
+// Compress an array of bytes to the target size using a simple xor.
 func Compress(bytes []byte, target int) []byte {
 
 	length := len(bytes)
