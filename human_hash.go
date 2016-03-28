@@ -21,7 +21,7 @@ import (
 
 var (
 	ErrTargetLessThanInput = errors.New("Fewer input bytes than requested target")
-	ErrIncorrectSizeList   = errors.New("Word list must contain 255 words")
+	ErrIncorrectSizeList   = errors.New("Word list must contain 256 words")
 )
 
 // The default word list.
@@ -64,10 +64,10 @@ var DefaultWordList = []string{
 	"zulu"}
 
 // SetWordList allows you to override the default word list used by the Humanize method.
-// This list of words MUST contain 255 entries.
+// This list of words MUST contain 256 entries.
 func SetWordList(words []string) error {
 
-	if len(words) != 255 {
+	if len(words) != 256 {
 		return ErrIncorrectSizeList
 	}
 

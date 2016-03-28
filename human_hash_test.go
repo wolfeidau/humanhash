@@ -2,6 +2,7 @@ package humanhash
 
 import (
 	"encoding/hex"
+	"fmt"
 	"testing"
 )
 
@@ -28,6 +29,8 @@ func TestCompress(t *testing.T) {
 		}
 	}
 
+	fmt.Printf("len = %d\n", len(DefaultWordList))
+
 }
 
 func TestHumanize(t *testing.T) {
@@ -39,6 +42,10 @@ func TestHumanize(t *testing.T) {
 		{
 			input:  []byte{96, 173, 141, 13, 135, 27, 96, 149, 128, 130, 151},
 			result: "sodium-magnesium-nineteen-hydrogen",
+		},
+		{
+			input:  []byte{0, 255, 141, 13},
+			result: "ack-zulu-mississippi-august",
 		},
 	}
 
