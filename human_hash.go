@@ -131,3 +131,24 @@ func Compress(digest []byte, target int) ([]byte, error) {
 
 	return results, nil
 }
+
+// A version of Humanize which uses a supplied keyword list and delimiter character.
+// Use this function if you calling from within multiple goroutines.
+func HumanizeUsing(digest []byte, words int, keywords []string, delimiter string) (string, error) {
+	if len(keywords) != 256 {
+		return "", ErrIncorrectSizeList
+	}
+
+	var w []string
+
+	c, err := Compress(digest, words)
+	if err != nil {
+		return "", err
+	}
+
+	for _, b := range c {
+		w = append(w, keywords[b])
+	}
+
+	return strings.Join(w, delimiter), nil
+}

@@ -18,6 +18,19 @@ log.Printf("result = %s", result)
 
 ```
 
+# Goroutine Safe Function
+Use function HumanizeUsing if you need to generate human hashes from within multiple goroutines and you don't want to use the default word list or delimiter.
+
+```go
+
+input :=  []byte{96, 173, 141, 13, 135, 27, 96, 149, 128, 130, 151}
+
+// take the input and map it to 4 words from your own keyword list, using . as the word delimiter.
+result, _ := humanhash.HumanizeUsing(input, 4, myKeywordList, ".")
+
+```
+Refer to human_hash_test.go for a working example.
+
 # Sponsor
 
 This project was made possible by [Ninja Blocks](http://ninjablocks.com).
